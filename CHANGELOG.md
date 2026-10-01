@@ -2,6 +2,6 @@
 
 ## 0.1.0
 
-Primeira biblioteca do motor SAST do [SecScan](https://github.com/saulofilho/secscan): regras de segredo e rota, entropia de Shannon, impact score, relatórios JSON/CSV/SARIF/Markdown e quality gate na CLI.
+First PyPI package of the [SecScan](https://github.com/saulofilho/secscan) SAST engine: secret and route rules, Shannon entropy, impact score, JSON/CSV/SARIF/Markdown reports, and a CLI quality gate.
 
-Relatórios serializados mascaram o valor encontrado. O objeto em memória ainda guarda o literal para quem chama `scan_path` / `scan_text` no mesmo processo.
+Serialized reports mask the matched value. The in-memory object still keeps the literal.

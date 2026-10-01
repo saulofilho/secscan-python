@@ -18,16 +18,16 @@ from .version import __version__
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="secscan",
-        description="Análise estática de segredos, entropia e rotas de API.",
+        description="Static analysis for secrets, entropy, and API paths.",
     )
-    parser.add_argument("path", nargs="?", default=".", help="Arquivo ou diretório (default: .)")
+    parser.add_argument("path", nargs="?", default=".", help="File or directory (default: .)")
     parser.add_argument("--format", default="table", choices=["table", "json", "sarif", "csv", "markdown"])
-    parser.add_argument("--rules", help="JSON com regras adicionais")
-    parser.add_argument("--ignore", default="", help="Padrões extras, separados por vírgula")
-    parser.add_argument("--fail-on", choices=["critical", "high", "medium", "low", "info"], help="Exit 1 se houver achado nessa severidade ou acima")
-    parser.add_argument("--max-risk", type=float, help="Exit 1 se o impact score (0-100) passar do teto")
-    parser.add_argument("--output", help="Grava o relatório neste arquivo")
-    parser.add_argument("--reveal-secrets", action="store_true", help="Inclui o valor encontrado no relatório")
+    parser.add_argument("--rules", help="JSON file with extra rules")
+    parser.add_argument("--ignore", default="", help="Extra ignore patterns, comma-separated")
+    parser.add_argument("--fail-on", choices=["critical", "high", "medium", "low", "info"], help="Exit 1 if a finding meets or exceeds this severity")
+    parser.add_argument("--max-risk", type=float, help="Exit 1 if the impact score (0-100) exceeds the cap")
+    parser.add_argument("--output", help="Write the report to this file")
+    parser.add_argument("--reveal-secrets", action="store_true", help="Include the matched value in the report")
     parser.add_argument("--version", action="version", version=f"secscan {__version__}")
     return parser
 
@@ -38,10 +38,10 @@ def gate_message(report, fail_on: str | None, max_risk: float | None) -> str | N
     if fail_on:
         threshold = SEVERITY_RANK[fail_on.upper()]
         if any(SEVERITY_RANK[finding.severity] >= threshold for finding in report.findings):
-            reasons.append(f"achados com severidade >= {fail_on.upper()}")
+            reasons.append(f"findings with severity >= {fail_on.upper()}")
     if max_risk is not None and report.metrics.security_impact_score > max_risk:
         reasons.append(
-            f"impact score {report.metrics.security_impact_score} acima de {max_risk:g}"
+            f"impact score {report.metrics.security_impact_score} above {max_risk:g}"
         )
     if not reasons:
         return None
@@ -57,15 +57,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         report = scan_path(args.path, rules=rules, ignore=ignore)
         text = render(report, args.format, reveal_secrets=args.reveal_secrets)
     except InputError as exc:
-        print(f"Erro: {exc}", file=sys.stderr)
+        print(f"Error: {exc}", file=sys.stderr)
         return 2
     except Error as exc:
-        print(f"Erro: {exc}", file=sys.stderr)
+        print(f"Error: {exc}", file=sys.stderr)
         return 2
 
     if args.output:
         Path(args.output).write_text(text, encoding="utf-8")
-        print(f"Relatório gravado em {args.output}", file=sys.stderr)
+        print(f"Report written to {args.output}", file=sys.stderr)
     else:
         sys.stdout.write(text)
 

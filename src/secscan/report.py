@@ -129,7 +129,7 @@ def to_sarif(report: ScanReport, *, reveal_secrets: bool = False) -> str:
             {
                 "ruleId": finding.rule_id,
                 "level": level,
-                "message": {"text": f"{finding.rule_name}. Valor: {shown}"},
+                "message": {"text": f"{finding.rule_name}. Value: {shown}"},
                 "locations": [
                     {
                         "physicalLocation": {
@@ -175,41 +175,41 @@ def to_markdown(report: ScanReport, *, reveal_secrets: bool = False) -> str:
                 "\n".join(
                     [
                         f"### [{finding.severity}] {finding.rule_name}",
-                        f"- **Arquivo:** `{finding.file}` (linha {finding.line})",
-                        f"- **Valor:** `{shown}`",
-                        f"- **Entropia:** {finding.entropy}",
-                        f"- **Descrição:** {finding.description}",
-                        f"- **Remediação:** {finding.remediation}",
+                        f"- **File:** `{finding.file}` (line {finding.line})",
+                        f"- **Value:** `{shown}`",
+                        f"- **Entropy:** {finding.entropy}",
+                        f"- **Description:** {finding.description}",
+                        f"- **Remediation:** {finding.remediation}",
                     ]
                 )
             )
         findings_md = "\n\n".join(blocks)
     else:
-        findings_md = "_Nenhum segredo ou rota sensível encontrado._"
+        findings_md = "_No secrets or sensitive routes found._"
 
     if report.api_endpoints:
         routes = "\n".join(
-            f"- `{item.method}` `{item.path}` em `{item.file}:{item.line}`"
-            + (" **(sensível)**" if item.is_internal_or_admin else "")
+            f"- `{item.method}` `{item.path}` in `{item.file}:{item.line}`"
+            + (" **(sensitive)**" if item.is_internal_or_admin else "")
             for item in report.api_endpoints
         )
     else:
-        routes = "_Nenhum endpoint mapeado._"
+        routes = "_No endpoints mapped._"
 
     return "\n".join(
         [
-            "# Relatório SecScan",
+            "# SecScan report",
             "",
-            f"- **Alvo:** `{report.target}`",
-            f"- **Quando:** {report.timestamp}",
-            f"- **Arquivos analisados:** {report.scanned_files_count} (ignorados: {report.ignored_files_count})",
-            f"- **Achados:** {len(report.findings)}",
+            f"- **Target:** `{report.target}`",
+            f"- **When:** {report.timestamp}",
+            f"- **Files scanned:** {report.scanned_files_count} (ignored: {report.ignored_files_count})",
+            f"- **Findings:** {len(report.findings)}",
             f"- **Security score:** {metrics.security_score}/100",
             f"- **Impact score:** {metrics.security_impact_score}/100 ({metrics.impact_level})",
             "",
-            "## Severidade",
+            "## Severity",
             "",
-            "| Severidade | Quantidade |",
+            "| Severity | Count |",
             "|---|---|",
             f"| CRITICAL | {metrics.critical_count} |",
             f"| HIGH | {metrics.high_count} |",
@@ -217,7 +217,7 @@ def to_markdown(report: ScanReport, *, reveal_secrets: bool = False) -> str:
             f"| LOW | {metrics.low_count} |",
             f"| INFO | {metrics.info_count} |",
             "",
-            "## Achados",
+            "## Findings",
             "",
             findings_md,
             "",

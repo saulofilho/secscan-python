@@ -1,0 +1,13 @@
+[
+  {
+    "id": "sec-demo-token",
+    "name": "Demo corp token",
+    "pattern": "\\bCORP-[A-Z0-9]{24}\\b",
+    "severity": "HIGH",
+    "category": "CUSTOM",
+    "description": "Internal token format for the POC.",
+    "remediation": "Move CORP-* tokens to an environment variable.",
+    "flags": "g",
+    "minEntropy": 3.0
+  }
+]
