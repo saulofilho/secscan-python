@@ -2,7 +2,7 @@
 
 Static analysis engine extracted from [SecScan](https://github.com/saulofilho/secscan). It walks JavaScript and TypeScript trees, looks for hardcoded secrets and sensitive API paths, scores the workspace, and fails CI when a policy is exceeded.
 
-Python package and CLI. The same engine ships as the Ruby gem `secscan`. The React dashboard stays in the original repository.
+Python package `secscan-sast` and CLI `secscan`. The same engine ships as the Ruby gem `secscan`. The React dashboard stays in the original repository. The PyPI name cannot be `secscan` because it collides with [sec-scan](https://pypi.org/project/sec-scan/).
 
 ```bash
 pip install secscan-sast
