@@ -5,7 +5,7 @@ Static analysis engine extracted from [SecScan](https://github.com/saulofilho/se
 Python package and CLI. The same engine ships as the Ruby gem `secscan`. The React dashboard stays in the original repository.
 
 ```bash
-pip install secscan
+pip install secscan-sast
 secscan .
 secscan . --fail-on high --max-risk 50
 secscan . --format sarif --output secscan.sarif
@@ -87,7 +87,7 @@ The repo ships a tiny tree under [`examples/poc`](examples/poc): one source file
 PYTHONPATH=src python3 -m secscan examples/poc --format table
 ```
 
-After `pip install secscan`:
+After `pip install secscan-sast`:
 
 ```bash
 secscan examples/poc --format table
@@ -126,7 +126,7 @@ secscan /tmp/secscan-clean --fail-on critical --format table
 ## Installation
 
 ```bash
-pip install secscan
+pip install secscan-sast
 ```
 
 From this repository, without publishing:
@@ -489,7 +489,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install secscan
+      - run: pip install secscan-sast
       - name: Scan
         run: |
           secscan . \
@@ -503,6 +503,25 @@ jobs:
       - name: Quality gate
         run: secscan . --fail-on critical --max-risk 50
 ```
+
+## Publish to PyPI
+
+Trusted Publishing (OIDC) from GitHub Actions. No API token in the repo.
+
+1. Push `main` so [`.github/workflows/publish.yml`](.github/workflows/publish.yml) exists on the default branch.
+2. In [PyPI publishing](https://pypi.org/manage/account/publishing/), add a **pending publisher**:
+
+   | Field | Value |
+   |---|---|
+   | PyPI project name | `secscan-sast` |
+   | Owner | `saulofilho` |
+   | Repository | `secscan-python` |
+   | Workflow name | `publish.yml` |
+   | Environment name | leave empty |
+
+3. On GitHub: **Actions → Publish to PyPI → Run workflow**, or create release `v0.1.0`.
+
+The first successful run creates the project on PyPI. After that the pending publisher becomes a trusted publisher on the project.
 
 ## What it does not do
 
